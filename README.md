@@ -1,5 +1,7 @@
 # Bob Ross
 
+![Bob Ross](https://github.com/magroski/bob-ross/blob/master/bin/bob.jpg)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/magroski/bob-ross.svg?style=flat)](https://packagist.org/packages/magroski/bob-ross)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.1-8892BF.svg?style=flat)](https://php.net/)
 [![CircleCI](https://circleci.com/gh/magroski/bob-ross.svg?style=shield)](https://circleci.com/gh/magroski/bob-ross)
