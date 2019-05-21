@@ -1,13 +1,13 @@
 # Bob Ross
 
+This library provides an easy way to upload, manipulate and persist images.
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/magroski/bob-ross.svg?style=flat)](https://packagist.org/packages/magroski/bob-ross)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.1-8892BF.svg?style=flat)](https://php.net/)
 [![CircleCI](https://circleci.com/gh/magroski/bob-ross.svg?style=shield)](https://circleci.com/gh/magroski/bob-ross)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/magroski/bob-ross/blob/master/LICENSE)
 
 ![Bob Ross](https://github.com/magroski/bob-ross/blob/master/bin/bob.jpg)
-
-This library provides an easy way to upload, manipulate and persist images.
 
 > “We don't make mistakes, just happy little accidents.” - Bob Ross
 
