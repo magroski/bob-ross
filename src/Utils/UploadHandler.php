@@ -2223,7 +2223,7 @@ class UploadHandler
                             $this->file_src_name_ext  = '';
                             $this->file_src_name_body = $this->file_src_name;
                         }
-                        $this->file_src_size = (file_exists($this->file_src_pathname) ? filesize($this->file_src_pathname) : 0);
+                        $this->file_src_size = (file_exists($this->file_src_pathname) ? filesize($this->file_src_pathname) / 1024 : 0);
                     }
                     $this->file_src_error = 0;
                 } else {
@@ -2253,7 +2253,7 @@ class UploadHandler
                             $this->file_src_name_ext  = '';
                             $this->file_src_name_body = $this->file_src_name;
                         }
-                        $this->file_src_size = (file_exists($this->file_src_pathname) ? filesize($this->file_src_pathname) : 0);
+                        $this->file_src_size = (file_exists($this->file_src_pathname) ? filesize($this->file_src_pathname) / 1024 : 0);
                     }
                     $this->file_src_error = 0;
                 }
