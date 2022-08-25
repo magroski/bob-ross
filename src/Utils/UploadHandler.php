@@ -2718,21 +2718,21 @@ class UploadHandler
      *
      * @access private
      *
-     * @param string $size Size in bytes, or shorthand byte options
-     *
      * @return integer Size in bytes
      */
     function getsize($size)
     {
-        $last = strtolower($size[strlen($size) - 1]);
-        $size = substr($size, 0, -1);
-        switch ($last) {
-            case 'g':
-                $size *= 1024;
-            case 'm':
-                $size *= 1024;
-            case 'k':
-                $size *= 1024;
+        if (is_string($size)) {
+            $last = strtolower($size[strlen($size) - 1]);
+            $size = substr($size, 0, -1);
+            switch ($last) {
+                case 'g':
+                    $size *= 1024;
+                case 'm':
+                    $size *= 1024;
+                case 'k':
+                    $size *= 1024;
+            }
         }
 
         return $size;
@@ -2865,7 +2865,7 @@ class UploadHandler
         }
         // fills with background color if any is set
         if ($fill && !empty($this->image_background_color) && !$trsp) {
-            list($red, $green, $blue) = $this->getcolors($this->image_background_color);
+            [$red, $green, $blue] = $this->getcolors($this->image_background_color);
             $background_color = imagecolorallocate($dst_im, $red, $green, $blue);
             imagefilledrectangle($dst_im, 0, 0, $x, $y, $background_color);
         }
@@ -3101,14 +3101,14 @@ class UploadHandler
                 $this->error     = $this->translate('no_mime');
             } else {
                 if ($this->mime_check && !empty($this->file_src_mime) && strpos($this->file_src_mime, '/') !== false) {
-                    list($m1, $m2) = explode('/', $this->file_src_mime);
+                    [$m1, $m2] = explode('/', $this->file_src_mime);
                     $allowed = false;
                     // check wether the mime type is allowed
                     if (!is_array($this->allowed)) {
                         $this->allowed = [$this->allowed];
                     }
                     foreach ($this->allowed as $k => $v) {
-                        list($v1, $v2) = explode('/', $v);
+                        [$v1, $v2] = explode('/', $v);
                         if (($v1 == '*' && $v2 == '*') || ($v1 == $m1 && ($v2 == $m2 || $v2 == '*'))) {
                             $allowed = true;
                             break;
@@ -3119,7 +3119,7 @@ class UploadHandler
                         $this->forbidden = [$this->forbidden];
                     }
                     foreach ($this->forbidden as $k => $v) {
-                        list($v1, $v2) = explode('/', $v);
+                        [$v1, $v2] = explode('/', $v);
                         if (($v1 == '*' && $v2 == '*') || ($v1 == $m1 && ($v2 == $m2 || $v2 == '*'))) {
                             $allowed = false;
                             break;
@@ -3682,7 +3682,7 @@ class UploadHandler
 
                     // pre-crop image, before resizing
                     if ((!empty($this->image_precrop))) {
-                        list($ct, $cr, $cb, $cl) = $this->getoffsets($this->image_precrop, $this->image_src_x, $this->image_src_y, true, true);
+                        [$ct, $cr, $cb, $cl] = $this->getoffsets($this->image_precrop, $this->image_src_x, $this->image_src_y, true, true);
                         $this->log         .= '- pre-crop image : ' . $ct . ' ' . $cr . ' ' . $cb . ' ' . $cl . ' <br />';
                         $this->image_src_x = $this->image_src_x - $cl - $cr;
                         $this->image_src_y = $this->image_src_y - $ct - $cb;
@@ -3701,7 +3701,7 @@ class UploadHandler
                         if ($ct < 0 || $cr < 0 || $cb < 0 || $cl < 0) {
                             // use the background color if present
                             if (!empty($this->image_background_color)) {
-                                list($red, $green, $blue) = $this->getcolors($this->image_background_color);
+                                [$red, $green, $blue] = $this->getcolors($this->image_background_color);
                                 $fill = imagecolorallocate($tmp, $red, $green, $blue);
                             } else {
                                 $fill = imagecolorallocatealpha($tmp, 0, 0, 0, 127);
@@ -3900,7 +3900,7 @@ class UploadHandler
 
                     // crop image (and also crops if image_ratio_crop is used)
                     if ((!empty($this->image_crop) || !is_null($ratio_crop))) {
-                        list($ct, $cr, $cb, $cl) = $this->getoffsets($this->image_crop, $this->image_dst_x, $this->image_dst_y, true, true);
+                        [$ct, $cr, $cb, $cl] = $this->getoffsets($this->image_crop, $this->image_dst_x, $this->image_dst_y, true, true);
                         // we adjust the cropping if we use image_ratio_crop
                         if (!is_null($ratio_crop)) {
                             if (array_key_exists('t', $ratio_crop)) {
@@ -3934,7 +3934,7 @@ class UploadHandler
                         if ($ct < 0 || $cr < 0 || $cb < 0 || $cl < 0) {
                             // use the background color if present
                             if (!empty($this->image_background_color)) {
-                                list($red, $green, $blue) = $this->getcolors($this->image_background_color);
+                                [$red, $green, $blue] = $this->getcolors($this->image_background_color);
                                 $fill = imagecolorallocate($tmp, $red, $green, $blue);
                             } else {
                                 $fill = imagecolorallocatealpha($tmp, 0, 0, 0, 127);
@@ -4123,7 +4123,7 @@ class UploadHandler
                     // add color overlay
                     if ($gd_version >= 2 && (is_numeric($this->image_overlay_opacity) && $this->image_overlay_opacity > 0 && !empty($this->image_overlay_color))) {
                         $this->log .= '- apply color overlay<br />';
-                        list($red, $green, $blue) = $this->getcolors($this->image_overlay_color);
+                        [$red, $green, $blue] = $this->getcolors($this->image_overlay_color);
                         $filter = imagecreatetruecolor($this->image_dst_x, $this->image_dst_y);
                         $color  = imagecolorallocate($filter, $red, $green, $blue);
                         imagefilledrectangle($filter, 0, 0, $this->image_dst_x, $this->image_dst_y, $color);
@@ -4135,7 +4135,7 @@ class UploadHandler
                     if ($gd_version >= 2 && ($this->image_negative || $this->image_greyscale || is_numeric($this->image_threshold) || is_numeric($this->image_brightness) || is_numeric($this->image_contrast) || !empty($this->image_tint_color))) {
                         $this->log .= '- apply tint, light, contrast correction, negative, greyscale and threshold<br />';
                         if (!empty($this->image_tint_color)) {
-                            list($tint_red, $tint_green, $tint_blue) = $this->getcolors($this->image_tint_color);
+                            [$tint_red, $tint_green, $tint_blue] = $this->getcolors($this->image_tint_color);
                         }
                         //imagealphablending($image_dst, true);
                         for ($y = 0; $y < $this->image_dst_y; $y++) {
@@ -4203,12 +4203,12 @@ class UploadHandler
 
                     // adds a border
                     if ($gd_version >= 2 && !empty($this->image_border)) {
-                        list($ct, $cr, $cb, $cl) = $this->getoffsets($this->image_border, $this->image_dst_x, $this->image_dst_y, true, false);
+                        [$ct, $cr, $cb, $cl] = $this->getoffsets($this->image_border, $this->image_dst_x, $this->image_dst_y, true, false);
                         $this->log         .= '- add border : ' . $ct . ' ' . $cr . ' ' . $cb . ' ' . $cl . '<br />';
                         $this->image_dst_x = $this->image_dst_x + $cl + $cr;
                         $this->image_dst_y = $this->image_dst_y + $ct + $cb;
                         if (!empty($this->image_border_color)) {
-                            list($red, $green, $blue) = $this->getcolors($this->image_border_color);
+                            [$red, $green, $blue] = $this->getcolors($this->image_border_color);
                         }
                         $opacity = (is_numeric($this->image_border_opacity) ? (int)(127 - $this->image_border_opacity / 100 * 127) : 0);
                         // we now create an image, that we fill with the border color
@@ -4223,7 +4223,7 @@ class UploadHandler
 
                     // adds a fading-to-transparent border
                     if ($gd_version >= 2 && !empty($this->image_border_transparent)) {
-                        list($ct, $cr, $cb, $cl) = $this->getoffsets($this->image_border_transparent, $this->image_dst_x, $this->image_dst_y, true, false);
+                        [$ct, $cr, $cb, $cl] = $this->getoffsets($this->image_border_transparent, $this->image_dst_x, $this->image_dst_y, true, false);
                         $this->log .= '- add transparent border : ' . $ct . ' ' . $cr . ' ' . $cb . ' ' . $cl . '<br />';
                         // we now create an image, that we fill with the border color
                         $tmp = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y);
@@ -4329,7 +4329,7 @@ class UploadHandler
                         imagecopy($tmp, $image_dst, $nb, $nb, 0, 0, $this->image_dst_x - ($nb * 2), $this->image_dst_y - ($nb * 2));
                         $opacity = (is_numeric($this->image_frame_opacity) ? (int)(127 - $this->image_frame_opacity / 100 * 127) : 0);
                         for ($i = 0; $i < $nb; $i++) {
-                            list($red, $green, $blue) = $this->getcolors($vars[$i]);
+                            [$red, $green, $blue] = $this->getcolors($vars[$i]);
                             $c = imagecolorallocatealpha($tmp, $red, $green, $blue, $opacity);
                             if ($this->image_frame == 1) {
                                 imageline($tmp, $i, $i, $this->image_dst_x - $i - 1, $i, $c);
@@ -4355,8 +4355,8 @@ class UploadHandler
                         if (empty($this->image_bevel_color2)) {
                             $this->image_bevel_color2 = '#000000';
                         }
-                        list($red1, $green1, $blue1) = $this->getcolors($this->image_bevel_color1);
-                        list($red2, $green2, $blue2) = $this->getcolors($this->image_bevel_color2);
+                        [$red1, $green1, $blue1] = $this->getcolors($this->image_bevel_color1);
+                        [$red2, $green2, $blue2] = $this->getcolors($this->image_bevel_color2);
                         $tmp = $this->imagecreatenew($this->image_dst_x, $this->image_dst_y);
                         imagecopy($tmp, $image_dst, 0, 0, 0, 0, $this->image_dst_x, $this->image_dst_y);
                         imagealphablending($tmp, true);
@@ -4663,7 +4663,7 @@ class UploadHandler
 
                         // add a background, maybe transparent
                         if (!empty($this->image_text_background)) {
-                            list($red, $green, $blue) = $this->getcolors($this->image_text_background);
+                            [$red, $green, $blue] = $this->getcolors($this->image_text_background);
                             if ($gd_version >= 2 && (is_numeric($this->image_text_background_opacity)) && $this->image_text_background_opacity >= 0 && $this->image_text_background_opacity <= 100) {
                                 $filter           = imagecreatetruecolor($text_width, $text_height);
                                 $background_color = imagecolorallocate($filter, $red, $green, $blue);
@@ -4680,7 +4680,7 @@ class UploadHandler
                         $text_y   += $this->image_text_padding_y;
                         $t_width  = $text_width - (2 * $this->image_text_padding_x);
                         $t_height = $text_height - (2 * $this->image_text_padding_y);
-                        list($red, $green, $blue) = $this->getcolors($this->image_text_color);
+                        [$red, $green, $blue] = $this->getcolors($this->image_text_color);
 
                         // add the text, maybe transparent
                         if ($gd_version >= 2 && (is_numeric($this->image_text_opacity)) && $this->image_text_opacity >= 0 && $this->image_text_opacity <= 100) {
@@ -4763,7 +4763,7 @@ class UploadHandler
                         if ($image_reflection_height + $this->image_reflection_space > 0) {
                             // use the background color if present
                             if (!empty($this->image_background_color)) {
-                                list($red, $green, $blue) = $this->getcolors($this->image_background_color);
+                                [$red, $green, $blue] = $this->getcolors($this->image_background_color);
                                 $fill = imagecolorallocate($tmp, $red, $green, $blue);
                             } else {
                                 $fill = imagecolorallocatealpha($tmp, 0, 0, 0, 127);
@@ -4890,7 +4890,7 @@ class UploadHandler
                                         $mask[$x][$y] = $pixel['alpha'];
                                     }
                                 }
-                                list($red, $green, $blue) = $this->getcolors($this->image_default_color);
+                                [$red, $green, $blue] = $this->getcolors($this->image_default_color);
                                 // first, we merge the image with the background color, so we know which colors we will have
                                 for ($x = 0; $x < $this->image_dst_x; $x++) {
                                     for ($y = 0; $y < $this->image_dst_y; $y++) {
@@ -4928,7 +4928,7 @@ class UploadHandler
                         case 'bmp':
                             // if the image doesn't support any transparency, then we merge it with the default color
                             $this->log .= '&nbsp;&nbsp;&nbsp;&nbsp;fills in transparency with default color<br />';
-                            list($red, $green, $blue) = $this->getcolors($this->image_default_color);
+                            [$red, $green, $blue] = $this->getcolors($this->image_default_color);
                             $transparency = imagecolorallocate($image_dst, $red, $green, $blue);
                             // make the transaparent areas transparent
                             for ($x = 0; $x < $this->image_dst_x; $x++) {
