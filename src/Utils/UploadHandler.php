@@ -2724,7 +2724,7 @@ class UploadHandler
      */
     function getsize($size)
     {
-        $last = strtolower($size{strlen($size) - 1});
+        $last = strtolower($size[strlen($size) - 1]);
         $size = substr($size, 0, -1);
         switch ($last) {
             case 'g':
